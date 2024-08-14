@@ -1,4 +1,6 @@
 ﻿using MQClient.Core;
+using MQClient.Core.Msg;
+using MQClient.Core.Msg.Request;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,9 +32,14 @@ namespace MQClient.View
         {
             string pythonCode = PythonScriptTextBox.Text;
 
-            var parquetFilePath = ZeroMQInteraction.SyncRequest(5555, pythonCode);
+            var requestMessage = new CalculateRequestMessage(
+                "Sample",
+                "C:\\Work\\practice\\Python\\TableDataEditor",
+                new List<string>() { pythonCode });
 
-            var dataTable = ParquetConverter.ConvertParquetToDataTable(parquetFilePath);
+            var responseMessage = ZeroMQInteraction.SyncRequest(5555, requestMessage);
+
+            var dataTable = ParquetConverter.ConvertParquetToDataTable(responseMessage.OutputFilePath);
             dataGrid.ItemsSource = dataTable.DefaultView;
         }
     }

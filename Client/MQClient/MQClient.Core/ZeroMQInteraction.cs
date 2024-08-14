@@ -8,12 +8,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NetMQ;
+using System.Xml.Linq;
+using MQClient.Core.Msg;
+using MQClient.Core.Msg.Request;
+using MQClient.Core.Msg.Response;
 
 namespace MQClient.Core
 {
     public class ZeroMQInteraction
     {
-        public static string SyncRequest(int portNum, string message)
+        public static ResponseMessage SyncRequest(int portNum, RequestMessage msg)
         {
             using (var requestSocket = new RequestSocket())
             {
@@ -21,12 +25,13 @@ namespace MQClient.Core
                 requestSocket.Connect("tcp://localhost:" + portNum);
 
                 // サーバーにメッセージを送信
-                Console.WriteLine("Sending Hello");
-                requestSocket.SendFrame(message);
+                Console.WriteLine("Sending Message:" + msg.CreateRequestMsg().ToString());
+                requestSocket.SendFrame(msg.CreateRequestMsg().ToString());
 
                 // サーバーからの返信を受信
-                return requestSocket.ReceiveFrameString();
+                return new ResponseMessage(requestSocket.ReceiveFrameString());
             }
         }
+
     }
 }
