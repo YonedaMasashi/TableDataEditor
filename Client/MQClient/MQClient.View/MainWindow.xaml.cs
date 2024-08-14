@@ -3,6 +3,7 @@ using MQClient.Core.Msg;
 using MQClient.Core.Msg.Request;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,8 +40,22 @@ namespace MQClient.View
 
             var responseMessage = ZeroMQInteraction.SyncRequest(5555, requestMessage);
 
-            var dataTable = ParquetConverter.ConvertParquetToDataTable(responseMessage.OutputFilePath);
-            dataGrid.ItemsSource = dataTable.DefaultView;
+            if (responseMessage != null)
+            {
+                if (responseMessage.Status == "Success")
+                {
+                    var dataTable = ParquetConverter.ConvertParquetToDataTable(responseMessage.OutputFilePath);
+                    dataGrid.ItemsSource = dataTable.DefaultView;
+
+                    dataGrid.Visibility = Visibility.Visible;
+                    TbErrorMessage.Visibility = Visibility.Collapsed;
+                } else
+                {
+                    TbErrorMessage.Text = responseMessage.ExceptionMessage;
+                    dataGrid.Visibility = Visibility.Collapsed;
+                    TbErrorMessage.Visibility = Visibility.Visible;
+                }
+            }
         }
     }
 }

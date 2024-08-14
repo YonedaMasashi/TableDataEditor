@@ -27,6 +27,12 @@ namespace MQClient.Core.Msg.Response
             get { return _OutputFilePath; }
         }
 
+        private string _ExceptionMessage;
+        public string ExceptionMessage
+        {
+            get { return _ExceptionMessage; }
+        }
+
         public ResponseMessage(string responseMessageString)
         {
             var responseNode = XElement.Parse(responseMessageString);
@@ -43,8 +49,16 @@ namespace MQClient.Core.Msg.Response
 
             // OutputFilePath
             var outputFilePathNode = responseNode.Element("OutputFilePath");
-            if (outputFilePathNode == null) { throw new ArgumentNullException("OutputFilePath"); }
-            _OutputFilePath = outputFilePathNode.Value;
+            if (outputFilePathNode != null)
+            {
+                _OutputFilePath = outputFilePathNode.Value;
+            }
+
+            var exceptionMessageNode = responseNode.Element("ExceptionMessage");
+            if (exceptionMessageNode != null)
+            {
+                _ExceptionMessage = exceptionMessageNode.Value;
+            }
         }
     }
 }

@@ -56,8 +56,10 @@ def _response_exception(exception):
     response_root = ET.Element('root')
     status_node = ET.SubElement(response_root, 'Status')
     status_node.text = "Exception"
+    index_node = ET.SubElement(response_root, 'Index')
+    index_node.text = str(index)
     exception_message = ET.SubElement(response_root, 'ExceptionMessage')
-    exception_message.text = str(e).encode('utf-8')
+    exception_message.text = str(e)
     return minidom.parseString(ET.tostring(response_root, 'utf-8')).toprettyxml()
 
 context = zmq.Context()
@@ -117,7 +119,7 @@ while True:
             for elem in formula_list:
                 exec(elem)
         except Exception as e:
-            socket.send(_response_exception(e))
+            socket.send(_response_exception(e).encode('utf-8'))
             continue
 
     print(df.head())

@@ -11,6 +11,7 @@
             <TextBox Name="PythonScriptTextBox" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="200" />
             <Button Content="Execute" VerticalAlignment="Bottom" Click="ExecuteButton_Click" Height="30" Width="100" HorizontalAlignment="Left"/>
             <DataGrid Name="dataGrid" AutoGenerateColumns="True" />
+            <TextBlock Name="TbErrorMessage" />
         </StackPanel>
     </Grid>
 </Window>
